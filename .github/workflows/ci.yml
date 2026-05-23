@@ -1,4 +1,4 @@
-name: ASP.NET Core CI
+name: ASP.NET Core CI/CD
 
 on:
   push:
@@ -7,25 +7,59 @@ on:
 
 jobs:
 
-  build:
+  build-and-deploy:
 
     runs-on: ubuntu-latest
 
     steps:
 
+    # =========================
+    # CHECKOUT SOURCE CODE
+    # =========================
     - name: Checkout Code
       uses: actions/checkout@v4
 
+    # =========================
+    # INSTALL .NET SDK
+    # =========================
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
+    # =========================
+    # RESTORE NUGET PACKAGES
+    # =========================
     - name: Restore Dependencies
       run: dotnet restore
 
+    # =========================
+    # BUILD PROJECT
+    # =========================
     - name: Build Project
       run: dotnet build --configuration Release --no-restore
 
+    # =========================
+    # PUBLISH PROJECT
+    # =========================
     - name: Publish Project
       run: dotnet publish --configuration Release --output ./publish
+
+    # =========================
+    # UPLOAD ARTIFACT
+    # =========================
+    - name: Upload Publish Files
+      uses: actions/upload-artifact@v4
+      with:
+        name: published-app
+        path: ./publish
+
+    # =========================
+    # DEPLOY TO AZURE
+    # =========================
+    - name: Deploy to Azure App Service
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: YOUR_AZURE_APP_SERVICE_NAME
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ./publish
