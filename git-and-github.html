@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Git &amp; GitHub — Simple Daily Guide</title>
+  <meta name="description" content="A simple, visual guide to Git and GitHub for everyday development." />
+  <style>
+    :root {
+      --bg: #f6f3ee;
+      --bg-2: #fffdf9;
+      --ink: #1c1915;
+      --muted: #5c564d;
+      --line: #e4ddd3;
+      --git: #de4c26;
+      --github: #1f2328;
+      --ok: #1f7a4d;
+      --warn: #9a6700;
+      --card: #ffffff;
+      --shadow: 0 10px 30px rgba(28, 25, 21, 0.08);
+      --radius: 16px;
+      --nav: 260px;
+    }
+    [data-theme="dark"] {
+      --bg: #161412;
+      --bg-2: #1e1b18;
+      --ink: #f4efe7;
+      --muted: #b7b0a5;
+      --line: #3a342c;
+      --git: #ff6b45;
+      --github: #f0e6d8;
+      --ok: #5dcaa0;
+      --warn: #e3b341;
+      --card: #221e1a;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    .app {
+      display: grid;
+      grid-template-columns: var(--nav) 1fr;
+      min-height: 100vh;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      padding: 28px 18px;
+      border-right: 1px solid var(--line);
+      background: var(--bg-2);
+      display: flex;
+      flex-direction: column;
+    }
+    .brand {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .dots { display: flex; gap: 6px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot.git { background: var(--git); }
+    .dot.gh { background: var(--github); }
+    nav p { color: var(--muted); font-size: 13px; margin: 0 0 18px; }
+    nav a {
+      display: block;
+      text-decoration: none;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    nav a:hover, nav a.active { background: var(--bg); color: var(--ink); }
+    .search {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+    .tools { display: flex; gap: 8px; margin: auto 0 8px; }
+    button.icon {
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    main { padding: 36px 48px 80px; max-width: 980px; }
+    .hero {
+      background: linear-gradient(135deg, #fff 0%, #fbe8e1 55%, #ece7e1 100%);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 36px;
+      box-shadow: var(--shadow);
+    }
+    [data-theme="dark"] .hero {
+      background: linear-gradient(135deg, #2a221e, #231c18 60%, #1a1714);
+    }
+    .kicker {
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--git);
+      font-weight: 700;
+    }
+    h1 { font-size: 42px; line-height: 1.1; margin: 8px 0 12px; }
+    .lead { font-size: 19px; color: var(--muted); max-width: 42rem; }
+    .pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px 18px 16px;
+    }
+    .card h3 { margin: 0 0 8px; }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+    .tag.git { background: #ffe4dc; color: #9b2c0a; }
+    .tag.gh { background: #1f2328; color: #f6f0e8; }
+    [data-theme="dark"] .tag.git { background: #4a2418; color: #ffb199; }
+    [data-theme="dark"] .tag.gh { background: #f0e6d8; color: #1f2328; }
+    h2 { font-size: 28px; margin: 56px 0 8px; }
+    h2 .num {
+      color: var(--git);
+      margin-right: 8px;
+    }
+    .sub { color: var(--muted); margin-bottom: 18px; }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 18px 0 8px;
+    }
+    .flow .box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 140px;
+    }
+    .flow .box strong { display: block; margin-bottom: 6px; }
+    .arrow-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .steps { counter-reset: step; display: grid; gap: 12px; }
+    .step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 14px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .step:before {
+      counter-increment: step;
+      content: counter(step);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--git);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+    }
+    .step h3 { margin: 4px 0 6px; font-size: 18px; }
+    .step p { margin: 0 0 10px; color: var(--muted); }
+    pre, .cmd {
+      background: transparent;
+      color: #f6f0e8;
+      border-radius: 0;
+      padding: 0 14px 14px;
+      overflow: auto;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 13.5px;
+      margin: 0;
+    }
+    .copy-wrap {
+      position: relative;
+      background: #1f2328;
+      border-radius: 12px;
+      padding-top: 40px;
+    }
+    [data-theme="dark"] .copy-wrap { background: #0f0e0c; }
+    .copy {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      border: 0;
+      background: #fff;
+      color: #1f2328;
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      z-index: 2;
+    }
+    .copy:hover { background: #ffe4dc; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th { font-size: 13px; color: var(--muted); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    .callout {
+      border-left: 4px solid var(--git);
+      background: var(--card);
+      padding: 12px 14px;
+      border-radius: 0 12px 12px 0;
+      margin: 14px 0;
+    }
+    details {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin: 8px 0;
+    }
+    summary { cursor: pointer; font-weight: 650; }
+    .checklist label {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .cheats {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 8px 12px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .cheats code {
+      background: #efeae3;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+    }
+    [data-theme="dark"] .cheats code { background: #332e28; }
+    footer {
+      margin-top: 48px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .links { overflow: auto; flex: 1; }
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      nav { position: relative; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+      .links { display: grid; grid-template-columns: 1fr 1fr; }
+      .tools { margin: 12px 0 0; }
+      main { padding: 24px 18px 64px; }
+      .pair, .flow, .grid-2, .cheats { grid-template-columns: 1fr; }
+      .arrow-row { display: none; }
+      h1 { font-size: 32px; }
+    }
+    @media print {
+      nav, .tools, .copy { display: none; }
+      .app { display: block; }
+      .hero, .card, .step { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <nav>
+      <div class="brand">
+        <span class="dots"><span class="dot git"></span><span class="dot gh"></span></span>
+        Git &amp; GitHub
+      </div>
+      <p>A simple guide for everyday team work.</p>
+      <input class="search" id="navSearch" placeholder="Jump to a topic…" />
+      <div class="links" id="navLinks">
+        <a href="#start">Start here</a>
+        <a href="#difference">Git vs GitHub</a>
+        <a href="#picture">The big picture</a>
+        <a href="#setup">One-time setup</a>
+        <a href="#daily">Daily workflow</a>
+        <a href="#branches">Branches</a>
+        <a href="#commits">Good commits</a>
+        <a href="#prs">Pull requests</a>
+        <a href="#conflicts">Conflicts</a>
+        <a href="#undo">Undo mistakes</a>
+        <a href="#problems">Common problems</a>
+        <a href="#cheatsheet">Cheat sheet</a>
+        <a href="#practice">Practice</a>
+      </div>
+      <div class="tools">
+        <button class="icon" id="themeBtn" type="button">Dark mode</button>
+      </div>
+    </nav>
+
+    <main>
+      <section class="hero" id="start">
+        <div class="kicker">Team handbook</div>
+        <h1>Ship work every day with Git and GitHub.</h1>
+        <p class="lead">You do not need to memorize Git. Learn one picture, then follow the same 8 steps on every ticket. This page is written for everyone on the team — not only specialists.</p>
+        <div class="pair">
+          <div class="card">
+            <span class="tag git">Git</span>
+            <h3>Your notebook</h3>
+            <p>A tool on your computer. It saves snapshots of your files so you can try ideas, go back, and combine work without losing anything.</p>
+          </div>
+          <div class="card">
+            <span class="tag gh">GitHub</span>
+            <h3>The shared filing cabinet</h3>
+            <p>A website where the team stores the project, reviews each other’s work, and keeps <code>main</code> safe before anything is released.</p>
+          </div>
+        </div>
+      </section>
+
+      <h2 id="difference"><span class="num">1</span>Git vs GitHub</h2>
+      <p class="sub">If you remember only one sentence: Git records history on your machine. GitHub is where the team shares and reviews that history.</p>
+      <table>
+        <thead>
+          <tr><th>Thing</th><th>Where</th><th>What it means for you</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Files you edit</td><td>Your computer</td><td>This is your working copy. Nobody else sees it yet.</td></tr>
+          <tr><td>Commit</td><td>Git, on your computer</td><td>A saved snapshot with a short message.</td></tr>
+          <tr><td>Push</td><td>To GitHub</td><td>Now the team can see your branch.</td></tr>
+          <tr><td>Pull request</td><td>GitHub</td><td>“Please review this and put it on <code>main</code>.”</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>You can use Git without GitHub.</strong> A team cannot use GitHub well without Git.</div>
+
+      <h2 id="picture"><span class="num">2</span>The big picture</h2>
+      <p class="sub">Almost every command moves work between these four places. When you feel lost, ask: “Which box am I in?”</p>
+      <div class="flow">
+        <div class="box"><strong>1. Working files</strong>What you edit in Visual Studio or Cursor. Unsaved Git history.</div>
+        <div class="box"><strong>2. Staging</strong>A shopping cart. You choose which changes go into the next snapshot.</div>
+        <div class="box"><strong>3. Local Git</strong>Commits saved in the hidden <code>.git</code> folder. Safe even if the internet is down.</div>
+        <div class="box"><strong>4. GitHub</strong>The shared copy. Other people only see work after you push.</div>
+      </div>
+      <div class="arrow-row">
+        <div>edit files →</div>
+        <div><code>git add</code> →</div>
+        <div><code>git commit</code> →</div>
+        <div><code>git push</code></div>
+      </div>
+      <p>A <strong>branch</strong> is not a full copy of the project. It is a label that says “this line of work ends here.” Creating a branch is cheap. Use a new one for every ticket.</p>
+
+      <h2 id="setup"><span class="num">3</span>One-time setup</h2>
+      <p class="sub">Do this once on a new machine. Then you can ignore this section.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Tell Git who you are</h3>
+          <div class="copy-wrap">
+            <button class="copy" type="button">Copy</button>
+<pre>git config --global user.name "Your Name"
+git config --global user.email "you@company.com"</pre>
+          </div>
+          <p>Use the same email as GitHub.</p>
+        </div>
+        <div class="card">
+          <h3>Get the project</h3>
+          <div class="copy-wrap">
+            <button class="copy" type="button">Copy</button>
+<pre>git clone git@github.com:org/repo.git
+cd repo</pre>
+          </div>
+          <p>That folder is your local copy. GitHub is still the shared original.</p>
+        </div>
+      </div>
+      <p>On Windows, Git often comes with Visual Studio. Check with <code>git --version</code>. Sign in to GitHub with SSH or GitHub CLI (<code>gh auth login</code>) so you never type a password into Git.</p>
+
+      <h2 id="daily"><span class="num">4</span>Your daily workflow</h2>
+      <p class="sub">This is the whole job. Repeat it for every ticket. Tick the boxes as you learn the habit — they stay saved in this browser.</p>
+      <div class="card checklist" id="dailyCheck">
+        <label><input type="checkbox" data-k="1" /> Start from latest <code>main</code></label>
+        <label><input type="checkbox" data-k="2" /> Create a new branch for this ticket</label>
+        <label><input type="checkbox" data-k="3" /> Do the work, then inspect with <code>git status</code></label>
+        <label><input type="checkbox" data-k="4" /> Stage and commit with a clear message</label>
+        <label><input type="checkbox" data-k="5" /> Push the branch to GitHub</label>
+        <label><input type="checkbox" data-k="6" /> Open a pull request and wait for review</label>
+        <label><input type="checkbox" data-k="7" /> Fix review comments on the same branch</label>
+        <label><input type="checkbox" data-k="8" /> After merge, update local <code>main</code> and delete the branch</label>
+      </div>
+
+      <div class="steps">
+        <article class="step">
+          <div>
+            <h3>Update main</h3>
+            <p>Never start work on yesterday’s code.</p>
+            <div class="copy-wrap">
+              <button class="copy" type="button">Copy</button>
+<pre>git checkout main
+git pull</pre>
+            </div>
+          </div>
+        </article>
+        <article class="step">
+          <div>
+            <h3>Create a branch</h3>
+            <p>One ticket, one branch. Do not commit on <code>main</code>.</p>
+            <div class="copy-wrap">
+              <button class="copy" type="button">Copy</button>
+<pre>git checkout -b feature/short-ticket-name</pre>
+            </div>
+          </div>
+        </article>
+        <article class="step">
+          <div>
+            <h3>See what changed</h3>
+            <p>When you feel lost, this is the first command.</p>
+            <div class="copy-wrap">
+              <button class="copy" type="button">Copy</button>
+<pre>git status
+git diff</pre>
+            </div>
+          </div>
+        </article>
+        <article class="step">
+          <div>
+            <h3>Save a snapshot</h3>
+            <p>Stage only the files that belong in this idea. Then commit.</p>
+            <div class="copy-wrap">
+              <button class="copy" type="button">Copy</button>
+<pre>git add path/to/file
+git commit -m "Add CSV export for the user list"</pre>
+            </div>
+          </div>
+        </article>
+        <article class="step">
+          <div>
+            <h3>Share the branch</h3>
+            <p>The first push needs <code>-u</code> so Git remembers GitHub.</p>
+            <div class="copy-wrap">
+              <button class="copy" type="button">Copy</button>
+<pre>git push -u origin HEAD</pre>
+            </div>
+          </div>
+        </article>
+        <article class="step">
+          <div>
+            <h3>Open a pull request</h3>
+            <p>On GitHub, compare your branch to <code>main</code>. Write why the change exists. Ask for review. Or:</p>
+            <div class="copy-wrap">
+              <button class="copy" type="button">Copy</button>
+<pre>gh pr create --fill --base main</pre>
+            </div>
+          </div>
+        </article>
+        <article class="step">
+          <div>
+            <h3>Update the same PR</h3>
+            <p>Review comments are not a new ticket. Commit on the same branch and push again. The PR updates by itself.</p>
+            <div class="copy-wrap">
+              <button class="copy" type="button">Copy</button>
+<pre>git add path/to/file
+git commit -m "Address review: handle empty export"
+git push</pre>
+            </div>
+          </div>
+        </article>
+        <article class="step">
+          <div>
+            <h3>Clean up after merge</h3>
+            <p>Come home to a fresh <code>main</code>.</p>
+            <div class="copy-wrap">
+              <button class="copy" type="button">Copy</button>
+<pre>git checkout main
+git pull
+git branch -d feature/short-ticket-name</pre>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <h2 id="branches"><span class="num">5</span>Branches, in plain language</h2>
+      <p class="sub">Think of <code>main</code> as the hallway everyone walks through. Your branch is a side room. You decorate the room, then ask the team to accept it back into the hallway.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Good names</h3>
+          <p><code>feature/user-export-csv</code><br /><code>fix/login-timeout</code><br /><code>chore/upgrade-packages</code></p>
+        </div>
+        <div class="card">
+          <h3>Habits that help</h3>
+          <p>Keep branches short-lived. Do not mix two tickets on one branch. Merge <code>main</code> into your branch if the work lasts more than a day.</p>
+        </div>
+      </div>
+      <div class="copy-wrap">
+        <button class="copy" type="button">Copy</button>
+<pre>git fetch origin
+git merge origin/main</pre>
+      </div>
+
+      <h2 id="commits"><span class="num">6</span>Commits people can read</h2>
+      <p class="sub">Write the message like a command: what this snapshot does.</p>
+      <div class="grid-2">
+        <div class="card"><p class="ok">Fix timeout when the login service is slow</p></div>
+        <div class="card"><p class="warn">fixed stuff / wip / asdf / updates</p></div>
+      </div>
+      <div class="callout">Never commit passwords, connection strings, or personal settings. If a secret gets in, rotate it. Deleting the file later is not enough — history still has it.</div>
+      <p>Look at files before you stage everything. <code>git add .</code> is fast and also how junk gets in.</p>
+
+      <h2 id="prs"><span class="num">7</span>Pull requests — how the team ships</h2>
+      <p class="sub">A pull request is not a Git object. Git only knows commits and branches. GitHub adds the conversation, checks, and merge button.</p>
+      <table>
+        <thead><tr><th>Do this</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Keep the PR small</td><td>People actually review it.</td></tr>
+          <tr><td>Explain why, not only what</td><td>Reviewers cannot see the ticket in your head.</td></tr>
+          <tr><td>Wait for checks</td><td>A red build means “not ready.”</td></tr>
+          <tr><td>Use Draft until it is ready</td><td>Stops accidental merge and noisy review.</td></tr>
+        </tbody>
+      </table>
+      <p>GitHub can merge by creating a merge commit, squashing into one commit, or rebasing. Use the repo default. Do not fight it on every PR.</p>
+      <div class="callout"><strong>Merge vs rebase, short version:</strong> merge keeps the true history and is safer on shared branches. rebase replays your commits on top of latest <code>main</code> and rewrites hashes. Never rebase <code>main</code>. Never force-push <code>main</code>.</div>
+
+      <h2 id="conflicts"><span class="num">8</span>Conflicts are normal</h2>
+      <p class="sub">A conflict only means two people edited the same place. Git is asking you to choose the final text.</p>
+      <ol>
+        <li>Open the marked file. You will see <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>.</li>
+        <li>Edit it into the correct finished code. Delete the markers.</li>
+        <li>Stage the file: <code>git add path/to/file</code></li>
+        <li>If you were merging: <code>git commit</code>. If you were rebasing: <code>git rebase --continue</code>.</li>
+      </ol>
+      <p>Need to bail out? <code>git merge --abort</code> or <code>git rebase --abort</code> returns you to before you started.</p>
+
+      <h2 id="undo"><span class="num">9</span>Undo, without panic</h2>
+      <p class="sub">Run <code>git status</code> first. Most “undo” commands move a pointer. A few throw away uncommitted work — those are marked.</p>
+      <table>
+        <thead><tr><th>I want to…</th><th>Command</th></tr></thead>
+        <tbody>
+          <tr><td>Unstage a file, keep the edits</td><td><code>git restore --staged file</code></td></tr>
+          <tr><td>Throw away uncommitted edits in a file</td><td><code>git restore file</code> (destructive)</td></tr>
+          <tr><td>Fix the last commit message (not pushed)</td><td><code>git commit --amend -m "Better message"</code></td></tr>
+          <tr><td>Undo last local commit, keep files</td><td><code>git reset HEAD~1</code></td></tr>
+          <tr><td>Undo a commit already on main</td><td><code>git revert HASH</code> then push</td></tr>
+          <tr><td>Park unfinished work and switch branch</td><td><code>git stash push -m "wip"</code> then later <code>git stash pop</code></td></tr>
+        </tbody>
+      </table>
+      <div class="callout">If the bad commit is already on shared <code>main</code>, do not rewrite history. Use <code>git revert</code>. That adds a new commit that undoes the old one.</div>
+
+      <h2 id="problems"><span class="num">10</span>Common problems</h2>
+      <details>
+        <summary>Git will not let me switch branches</summary>
+        <p>You have unsaved changes Git would overwrite. Commit them, stash them, or discard them.</p>
+        <div class="copy-wrap"><button class="copy" type="button">Copy</button><pre>git stash push -m "wip"
+git switch other-branch</pre></div>
+      </details>
+      <details>
+        <summary>I committed on main by mistake (not pushed)</summary>
+        <div class="copy-wrap"><button class="copy" type="button">Copy</button><pre>git branch feature/move-this
+git reset --hard origin/main
+git switch feature/move-this
+git push -u origin HEAD</pre></div>
+      </details>
+      <details>
+        <summary>Push was rejected — remote has work I do not have</summary>
+        <p>Pull first, then push. Do not force-push unless it is your private branch and you understand the risk.</p>
+        <div class="copy-wrap"><button class="copy" type="button">Copy</button><pre>git pull
+git push</pre></div>
+      </details>
+      <details>
+        <summary>I need yesterday’s file, but I want to keep current history</summary>
+        <div class="copy-wrap"><button class="copy" type="button">Copy</button><pre>git checkout main -- path/to/file
+git commit -m "Restore file from main"</pre></div>
+      </details>
+      <details>
+        <summary>Permission denied (publickey)</summary>
+        <p>Your SSH key is not loaded or not added in GitHub → Settings → SSH keys. Test with <code>ssh -T git@github.com</code>.</p>
+      </details>
+
+      <h2 id="cheatsheet"><span class="num">11</span>Cheat sheet</h2>
+      <p class="sub">Keep this nearby. After a few weeks you will not need it.</p>
+      <div class="cheats">
+        <div>Where am I?</div><div><code>git status</code> · <code>git log --oneline -10</code></div>
+        <div>Start a ticket</div><div><code>git switch main</code> · <code>git pull</code> · <code>git switch -c feature/name</code></div>
+        <div>Save work</div><div><code>git add -p</code> · <code>git commit -m "Why this changed"</code></div>
+        <div>Share it</div><div><code>git push -u origin HEAD</code></div>
+        <div>Refresh from main</div><div><code>git fetch origin</code> · <code>git merge origin/main</code></div>
+        <div>Finish</div><div><code>git switch main</code> · <code>git pull</code> · <code>git branch -d feature/name</code></div>
+      </div>
+
+      <h2 id="practice"><span class="num">12</span>Thirty-minute practice</h2>
+      <p class="sub">Do this once on a throwaway GitHub repo. After it feels boring, you know enough for daily work.</p>
+      <ol>
+        <li>Clone the repo, create a branch, add a file, commit, push, open a PR, merge it.</li>
+        <li>Make two branches that edit the same line. Merge both and resolve the conflict.</li>
+        <li>Amend a commit you have not pushed.</li>
+        <li>Revert a commit you have pushed.</li>
+        <li>Stash work, switch branches, then pop the stash.</li>
+      </ol>
+      <div class="callout">Team rules belong at the top of this page if you have them: branch prefixes, squash-only merges, required reviewers. Write them down so nobody has to guess.</div>
+
+      <footer>
+        Open this file in any browser. Pair it with <code>GIT_AND_GITHUB_GUIDE.md</code> when you need the longer reference.
+      </footer>
+    </main>
+  </div>
+  <script>
+    const root = document.documentElement;
+    const themeBtn = document.getElementById("themeBtn");
+    const savedTheme = localStorage.getItem("git-guide-theme");
+    if (savedTheme) root.setAttribute("data-theme", savedTheme);
+    const setThemeLabel = () => {
+      themeBtn.textContent = root.getAttribute("data-theme") === "dark" ? "Light mode" : "Dark mode";
+    };
+    setThemeLabel();
+    themeBtn.addEventListener("click", () => {
+      const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      if (next === "light") root.removeAttribute("data-theme");
+      else root.setAttribute("data-theme", "dark");
+      localStorage.setItem("git-guide-theme", root.getAttribute("data-theme") || "light");
+      setThemeLabel();
+    });
+
+    document.querySelectorAll(".copy").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const pre = btn.parentElement.querySelector("pre");
+        await navigator.clipboard.writeText(pre.innerText);
+        btn.textContent = "Copied";
+        setTimeout(() => (btn.textContent = "Copy"), 1200);
+      });
+    });
+
+    const checkboxes = document.querySelectorAll("#dailyCheck input");
+    checkboxes.forEach((box) => {
+      const key = "git-guide-check-" + box.dataset.k;
+      box.checked = localStorage.getItem(key) === "1";
+      box.addEventListener("change", () => localStorage.setItem(key, box.checked ? "1" : "0"));
+    });
+
+    const links = [...document.querySelectorAll("#navLinks a")];
+    const sections = links.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+    const sync = () => {
+      const y = window.scrollY + 120;
+      let current = sections[0];
+      for (const s of sections) if (s.offsetTop <= y) current = s;
+      links.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + current.id));
+    };
+    document.addEventListener("scroll", sync, { passive: true });
+    sync();
+
+    const search = document.getElementById("navSearch");
+    search.addEventListener("input", () => {
+      const q = search.value.toLowerCase();
+      links.forEach((a) => {
+        a.style.display = a.textContent.toLowerCase().includes(q) ? "" : "none";
+      });
+    });
+  </script>
+</body>
+</html>
